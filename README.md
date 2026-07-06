@@ -42,19 +42,20 @@ graph LR
 
 ### Use Case Diagram
 ```mermaid
-left_to_right_direction
-actor Customer as "Customer / Applicant"
-actor Underwriter as "Bank Officer / Underwriter"
+flowchart LR
 
-rectangle SmartLenderSystem {
-    usecase UC1 as "Single Loan Assessment"
-    usecase UC2 as "Batch CSV Upload Prediction"
-    usecase UC3 as "Download Assessment Report (PDF)"
-    usecase UC4 as "Search Prediction Database Logs"
-    usecase UC5 as "Compare ML Algorithms Performance"
-    usecase UC6 as "Manage Database entries"
-    usecase UC7 as "Submit Inquiries Form"
-}
+subgraph SmartLenderSystem
+    UC1([Single Loan Assessment])
+    UC2([Batch CSV Upload Prediction])
+    UC3([Download Assessment Report (PDF)])
+    UC4([Search Prediction Database Logs])
+    UC5([Compare ML Algorithms Performance])
+    UC6([Manage Database Entries])
+    UC7([Submit Inquiries Form])
+end
+
+Customer["Customer / Applicant"]
+Underwriter["Bank Officer / Underwriter"]
 
 Customer --> UC1
 Customer --> UC3
@@ -67,7 +68,6 @@ Underwriter --> UC4
 Underwriter --> UC5
 Underwriter --> UC6
 ```
-
 ### Data Flow Diagram Level 0
 ```mermaid
 graph LR
