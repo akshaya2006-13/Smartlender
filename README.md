@@ -44,18 +44,18 @@ graph LR
 ```mermaid
 flowchart LR
 
-subgraph SmartLenderSystem
-    UC1([Single Loan Assessment])
-    UC2([Batch CSV Upload Prediction])
-    UC3([Download Assessment Report (PDF)])
-    UC4([Search Prediction Database Logs])
-    UC5([Compare ML Algorithms Performance])
-    UC6([Manage Database Entries])
-    UC7([Submit Inquiries Form])
-end
-
 Customer["Customer / Applicant"]
 Underwriter["Bank Officer / Underwriter"]
+
+subgraph SmartLenderSystem
+    UC1("Single Loan Assessment")
+    UC2("Batch CSV Upload Prediction")
+    UC3("Download Assessment Report (PDF)")
+    UC4("Search Prediction Database Logs")
+    UC5("Compare ML Algorithms Performance")
+    UC6("Manage Database Entries")
+    UC7("Submit Inquiries Form")
+end
 
 Customer --> UC1
 Customer --> UC3
