@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="py-5 text-color">
+    <div class="container">
+        
+        <!-- Admin Title -->
+        <div class="text-center mb-5 animated-fade">
+            <h2 class="fw-bold"><i class="fa-solid fa-user-shield me-2 text-primary"></i>Admin Operations Management</h2>
+            <p class="text-muted">Review prediction logging tables, manage database history, and respond to incoming customer contact messages.</p>
+        </div>
+
+        <!-- Tabs for Admin actions -->
+        <ul class="nav nav-tabs nav-tabs-custom justify-content-center" id="adminTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="history-tab" data-bs-toggle="tab" data-bs-target="#admin-history" type="button" role="tab" aria-controls="admin-history" aria-selected="true">
+                    <i class="fas fa-list-check me-2"></i>Prediction History Log
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="inquiries-tab" data-bs-toggle="tab" data-bs-target="#admin-inquiries" type="button" role="tab" aria-controls="admin-inquiries" aria-selected="false">
+                    <i class="fas fa-envelope-open-text me-2"></i>Customer Inquiries
+                    {% if inquiries|length > 0 %}
+                    <span class="badge bg-danger rounded-pill ms-1">{{ inquiries|length }}</span>
+                    {% endif %}
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content mt-4" id="adminTabsContent">
+            
+            <!-- Tab 1: Prediction History Log -->
+            <div class="tab-pane fade show active" id="admin-history" role="tabpanel" aria-labelledby="history-tab">
+                <div class="card glass-card p-4 border-0">
+                    
+                    <!-- Search and filters -->
+                    <div class="d-flex flex-wrap gap-3 justify-content-between align-items-center mb-4">
+                        <h4 class="fw-bold mb-0">Assessments Database Logs</h4>
+                        
+                        <form action="{{ url_for('admin') }}" method="GET" class="d-flex gap-2">
+                            <input type="text" name="search" class="form-control form-control-custom" placeholder="Search name/result/risk..." value="{{ search }}">
+                            <button type="submit" class="btn btn-primary-custom px-4"><i class="fas fa-search"></i></button>
+                            {% if search %}
+                            <a href="{{ url_for('admin') }}" class="btn btn-secondary-custom rounded-pill px-3"><i class="fas fa-xmark"></i></a>
+                            {% endif %}
+                        </form>
+                    </div>
+
+                    <!-- History Table -->
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle border mb-4">
+                            <thead class="table-light small text-uppercase">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Applicant Name</th>
+                                    <th>Date Assess</th>
+                                    <th>Loan Requested</th>
+                                    <th>Outcome</th>
+                                    <th>Confidence</th>
+                                    <th>Risk Level</th>
+                                    <th class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="small">
+                                {% if records %}
+                                    {% for row in records %}
+                                    <tr>
+                                        <td><strong>#{{ row.id }}</strong></td>
+                                        <td>{{ row.applicant_name }}</td>
+                                        <td>{{ row.timestamp.strftime("%Y-%m-%d %H:%M") }}</td>
+                                        <td>${{ "{:,.2f}".format(row.loan_amount * 1000) }}</td>
+                                        <td>
+                                            {% if row.prediction_outcome == 'Y' %}
+                                            <span class="badge bg-success px-2 py-1"><i class="fas fa-circle-check me-1"></i>Approved</span>
+                                            {% else %}
+                                            <span class="badge bg-danger px-2 py-1"><i class="fas fa-triangle-exclamation me-1"></i>Declined</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ "%.1f"|format(row.probability * 100) }}%</td>
+                                        <td>
+                                            {% if row.risk_level == 'Low' %}
+                                            <span class="text-success"><i class="fas fa-shield-check me-1"></i>Low</span>
+                                            {% elif row.risk_level == 'Medium' %}
+                                            <span class="text-warning"><i class="fas fa-exclamation-triangle me-1"></i>Medium</span>
+                                            {% else %}
+                                            <span class="text-danger fw-bold"><i class="fas fa-radiation me-1"></i>High</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="d-flex gap-2 justify-content-center">
+                                                <a href="{{ url_for('result', prediction_id=row.id) }}" class="btn btn-sm btn-outline-info" title="View details"><i class="fas fa-eye"></i></a>
+                                                <a href="{{ url_for('download_pdf', prediction_id=row.id) }}" class="btn btn-sm btn-outline-success" title="Download Report"><i class="fas fa-file-pdf"></i></a>
+                                                <a href="{{ url_for('delete_record', record_id=row.id) }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete prediction record #{{ row.id }}?')" title="Delete entry"><i class="fas fa-trash-alt"></i></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="8" class="text-center text-muted py-4">No prediction records found in database logging history.</td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination Controls -->
+                    {% if pagination and pagination.pages > 1 %}
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-center mb-0">
+                            <!-- Previous button -->
+                            <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+                                <a class="page-link" href="{{ url_for('admin', page=pagination.prev_num, search=search) }}" tabindex="-1">Previous</a>
+                            </li>
+                            
+                            <!-- Numbers -->
+                            {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                                {% if page_num %}
+                                    <li class="page-item {% if page_num == pagination.page %}active{% endif %}">
+                                        <a class="page-link" href="{{ url_for('admin', page=page_num, search=search) }}">{{ page_num }}</a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                                {% endif %}
+                            {% endfor %}
+
+                            <!-- Next button -->
+                            <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+                                <a class="page-link" href="{{ url_for('admin', page=pagination.next_num, search=search) }}">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+                    {% endif %}
+
+                </div>
+            </div>
+
+            <!-- Tab 2: Contact Inquiries List -->
+            <div class="tab-pane fade" id="admin-inquiries" role="tabpanel" aria-labelledby="inquiries-tab">
+                <div class="card glass-card p-4 border-0">
+                    <h4 class="fw-bold mb-4">Customer Contact Messages</h4>
+                    
+                    <div class="row g-4">
+                        {% if inquiries %}
+                            {% for msg in inquiries %}
+                            <div class="col-md-6">
+                                <div class="card bg-light bg-opacity-50 p-4 border rounded-4 position-relative">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h5 class="fw-bold mb-1">{{ msg.subject }}</h5>
+                                        <span class="text-muted small">{{ msg.timestamp.strftime("%Y-%m-%d %H:%M") }}</span>
+                                    </div>
+                                    <h6 class="small text-primary mb-3">From: <strong>{{ msg.name }}</strong> ({{ msg.email }})</h6>
+                                    <p class="small text-muted mb-3" style="line-height:1.5;">"{{ msg.message }}"</p>
+                                    <div class="text-end">
+                                        <a href="{{ url_for('delete_contact', inquiry_id=msg.id) }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Clear contact log entry #{{ msg.id }}?')"><i class="fas fa-check-circle me-1"></i>Resolve Inquiry</a>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="col-12 text-center text-muted py-5">
+                                <i class="fas fa-inbox fs-1 text-secondary mb-3"></i>
+                                <p class="mb-0">No active customer inquiries pending resolution.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+{% endblock %}

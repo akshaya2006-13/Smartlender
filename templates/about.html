@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <div class="row g-5">
+            <div class="col-lg-7">
+                <span class="badge bg-primary mb-3 px-3 py-2 text-uppercase tracking-wider">System Architecture & Pipeline</span>
+                <h2 class="fw-bold mb-4">About SMART LENDER Project</h2>
+                <p class="lead">The SMART LENDER system represents an intelligent machine learning underwriting tool designed to determine borrower eligibility and compute credit risk scores.</p>
+                <p class="text-muted">By processing customer demographic and financial details, the platform determines pre-approvals instantly while checking parameters against a collection of eight optimized classifiers. The system uses a modular pipeline to guarantee that input processing matches training standards, eliminating data leakage and ensuring reproducible predictions.</p>
+                
+                <h4 class="fw-bold mt-4 mb-3">Model Training Pipeline Workflow</h4>
+                <div class="p-3 bg-light rounded-3 border mb-4">
+                    <ol class="mb-0 text-muted">
+                        <li><strong>Missing Value Imputation</strong>: Imputes missing numerical columns with the training median and missing categorical columns with the mode.</li>
+                        <li><strong>Outlier Management</strong>: Log transformation ($log(x+1)$) is applied to skewed features (Applicant Income, Co-applicant Income, and Loan Amount) to normalize distributions.</li>
+                        <li><strong>Feature Encoding</strong>: Binary categoricals are label-encoded, while multi-class variables (Property Area) are hot-encoded.</li>
+                        <li><strong>Standard Scaling</strong>: Features are scaled using standard normalization before being passed to classifiers.</li>
+                        <li><strong>Cross-Validation Comparison</strong>: 8 classification models are trained and compared across accuracy, precision, recall, and F1 scores. The best model is selected automatically.</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <div class="col-lg-5">
+                <div class="card glass-card p-4 border-0">
+                    <h5 class="fw-bold mb-3"><i class="fa-solid fa-database text-info me-2"></i>Dataset Feature Space</h5>
+                    <table class="table table-sm table-hover text-color">
+                        <thead>
+                            <tr class="small">
+                                <th>Feature Name</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody class="small">
+                            <tr>
+                                <td><strong>Gender</strong></td>
+                                <td>Categorical</td>
+                                <td>Applicant Gender (Male/Female)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Married</strong></td>
+                                <td>Categorical</td>
+                                <td>Marital Status (Yes/No)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Dependents</strong></td>
+                                <td>Ordinal</td>
+                                <td>Number of dependents (0, 1, 2, 3+)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Education</strong></td>
+                                <td>Categorical</td>
+                                <td>Education (Graduate/Undergraduate)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Self Employed</strong></td>
+                                <td>Categorical</td>
+                                <td>Employment Status (Yes/No)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>ApplicantIncome</strong></td>
+                                <td>Numerical</td>
+                                <td>Monthly Applicant Income ($)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>CoapplicantIncome</strong></td>
+                                <td>Numerical</td>
+                                <td>Monthly Co-applicant Income ($)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>LoanAmount</strong></td>
+                                <td>Numerical</td>
+                                <td>Requested Loan Amount ($ Thousands)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Loan_Amount_Term</strong></td>
+                                <td>Numerical</td>
+                                <td>Loan Term Period (Months)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Credit_History</strong></td>
+                                <td>Binary</td>
+                                <td>Credit History matches guidelines (1/0)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Property_Area</strong></td>
+                                <td>Categorical</td>
+                                <td>Property Location (Rural/Semiurban/Urban)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mermaid Architecture Outline in a beautiful codeblock/diagram presentation -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card glass-card p-4 border-0">
+                    <h4 class="fw-bold mb-3"><i class="fa-solid fa-network-wired text-primary me-2"></i>System Flowchart Diagram</h4>
+                    <p class="text-muted">This diagram shows the routing path of application parameters from data entry to the machine learning execution phase and database storage.</p>
+                    
+                    <div class="bg-light p-3 rounded-3 border text-center font-monospace small text-color text-start">
+                        <pre style="margin-bottom:0; overflow-x: auto;">
++-------------------+      +-------------------------+      +--------------------------+
+|  User Input Form  | ---> |  Data Preprocessing     | ---> |  Saved Scale Imputers    |
+| (Web or Batch CSV)|      |  (Missing Val / Logs)   |      |  (scaler.pkl / enc.pkl)  |
++-------------------+      +-------------------------+      +--------------------------+
+                                                                         |
+                                                                         v
++-------------------+      +-------------------------+      +--------------------------+
+| Underwriting PDF  | <--- |  Predict Outcome        | <--- |  Best Trained ML Model   |
+| & HTML Outcomes   |      |  (Decision & Reasoning) |      |  (best_model.pkl)        |
++-------------------+      +-------------------------+      +--------------------------+
+          |
+          v
++--------------------------+
+| SQLite DB History Logs   |
+| (PredictionHistory Table)|
++--------------------------+
+                        </pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

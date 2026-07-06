@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="py-5 text-color">
+    <div class="container">
+        
+        <div class="text-center mb-5 animated-fade">
+            <h2 class="fw-bold">Frequently Asked Questions</h2>
+            <p class="text-muted col-lg-6 mx-auto">Find answers to common questions regarding credit parameters, underwriting speed, security checks, and machine learning scoring methods.</p>
+        </div>
+
+        <!-- Search Bar for FAQs -->
+        <div class="row justify-content-center mb-5">
+            <div class="col-md-8 col-lg-6">
+                <div class="input-group shadow-sm">
+                    <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-search"></i></span>
+                    <input type="text" id="faqSearchInput" class="form-control border-start-0 py-3" placeholder="Search FAQ articles..." onkeyup="filterFAQ()">
+                </div>
+            </div>
+        </div>
+
+        <!-- Accordions List -->
+        <div class="row justify-content-center">
+            <div class="col-lg-9">
+                <div class="accordion" id="faqAccordion">
+                    
+                    <!-- Q1 -->
+                    <div class="accordion-item glass-card mb-3 border-0 overflow-hidden faq-item">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button fw-bold py-3 bg-transparent text-color" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                What is the average accuracy of the loan pre-approval prediction model?
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-muted small bg-light bg-opacity-25 border-top">
+                                The system runs evaluations across 8 machine learning algorithms (Random Forest, XGBoost, Support Vector Machines, KNN, Naive Bayes, Gradient Boosting, Logistic Regression, and Decision Trees). The champion model typically achieves an accuracy range of 81% to 84% depending on variables and dataset quality.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Q2 -->
+                    <div class="accordion-item glass-card mb-3 border-0 overflow-hidden faq-item">
+                        <h2 class="accordion-header" id="headingTwo">
+                            <button class="accordion-button collapsed fw-bold py-3 bg-transparent text-color" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                Why is Credit History the strongest variable indicator?
+                            </button>
+                        </h2>
+                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-muted small bg-light bg-opacity-25 border-top">
+                                In historical underwriting datasets, applicants with positive payment history scores (Credit_History = 1.0) have an approval rate exceeding 80%, while applicants without credit records show rejection rates above 90%. Tree-based models identify this node split as the highest information-gain point.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Q3 -->
+                    <div class="accordion-item glass-card mb-3 border-0 overflow-hidden faq-item">
+                        <h2 class="accordion-header" id="headingThree">
+                            <button class="accordion-button collapsed fw-bold py-3 bg-transparent text-color" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                How can I improve a provisionally declined outcome?
+                            </button>
+                        </h2>
+                        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-muted small bg-light bg-opacity-25 border-top">
+                                The system dynamically recommends actions in the assessment outcome window. Common steps include applying for lower loan amounts, adding co-applicants to pool income, establishing regular savings, and resolving negative records in credit scores.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Q4 -->
+                    <div class="accordion-item glass-card mb-3 border-0 overflow-hidden faq-item">
+                        <h2 class="accordion-header" id="headingFour">
+                            <button class="accordion-button collapsed fw-bold py-3 bg-transparent text-color" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                Can I upload bulk customer profiles?
+                            </button>
+                        </h2>
+                        <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-muted small bg-light bg-opacity-25 border-top">
+                                Yes! In the "Verify Eligibility" section, use the "Batch CSV Upload" tab. You can upload files containing demographic and financial records. Results are parsed and saved to the admin history panel for retrieval.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Q5 -->
+                    <div class="accordion-item glass-card mb-3 border-0 overflow-hidden faq-item">
+                        <h2 class="accordion-header" id="headingFive">
+                            <button class="accordion-button collapsed fw-bold py-3 bg-transparent text-color" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                                Is this system compliant with banking security guidelines?
+                            </button>
+                        </h2>
+                        <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-muted small bg-light bg-opacity-25 border-top">
+                                This web application integrates validation checks, processes parameters using sanitized database parameters (via SQLAlchemy ORM), and limits file upload types to prevent security violations (e.g. cross-site script execution or buffer overflows).
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function filterFAQ() {
+        const input = document.getElementById("faqSearchInput");
+        const filter = input.value.toLowerCase();
+        const accordion = document.getElementById("faqAccordion");
+        const items = accordion.getElementsByClassName("faq-item");
+
+        for (let i = 0; i < items.length; i++) {
+            const heading = items[i].getElementsByTagName("button")[0];
+            const body = items[i].getElementsByClassName("accordion-body")[0];
+            
+            const txtValue = heading.textContent || heading.innerText;
+            const bodyValue = body.textContent || body.innerText;
+            
+            if (txtValue.toLowerCase().indexOf(filter) > -1 || bodyValue.toLowerCase().indexOf(filter) > -1) {
+                items[i].style.display = "";
+            } else {
+                items[i].style.display = "none";
+            }
+        }
+    }
+</script>
+{% endblock %}

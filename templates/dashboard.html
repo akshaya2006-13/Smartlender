@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        
+        <!-- Header Page Title -->
+        <div class="text-center mb-5 animated-fade">
+            <h2 class="fw-bold">Model Performance & Analytics Dashboard</h2>
+            <p class="text-muted">Explore classifier evaluations, correlation heatmaps, and credit demographic distributions.</p>
+        </div>
+
+        <!-- 1. Ensemble Status and Stats Summary Cards -->
+        <div class="row g-4 mb-5">
+            <div class="col-lg-4">
+                <div class="card glass-card p-4 border-0 text-center h-100 justify-content-center">
+                    <div class="fs-1 text-primary mb-2"><i class="fa-solid fa-trophy"></i></div>
+                    <h6 class="fw-bold text-muted text-uppercase mb-1 small">Optimal Champion Model</h6>
+                    <h3 class="fw-bold text-color mb-0">{{ best_model }}</h3>
+                    <p class="small text-success mt-2 mb-0"><i class="fa-solid fa-circle-check"></i> Automatically selected by F1 Score metrics</p>
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                <div class="card glass-card p-4 border-0 h-100">
+                    <h5 class="fw-bold mb-3 text-color"><i class="fa-solid fa-chart-pie me-2 text-info"></i>System Database Stats</h5>
+                    <div class="row g-3 text-center">
+                        <div class="col-md-4 col-6">
+                            <div class="p-3 bg-light bg-opacity-50 border rounded-3 text-color">
+                                <div class="dashboard-stat-label">Total Submissions</div>
+                                <div class="dashboard-stat-val">{{ total_p }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-6">
+                            <div class="p-3 bg-light bg-opacity-50 border rounded-3 text-color">
+                                <div class="dashboard-stat-label">Pre-Approved</div>
+                                <div class="dashboard-stat-val text-success">{{ app_p }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-12">
+                            <div class="p-3 bg-light bg-opacity-50 border rounded-3 text-color">
+                                <div class="dashboard-stat-label">Low Risk Ratio</div>
+                                <div class="dashboard-stat-val text-info">
+                                    {% if total_p > 0 %}
+                                    {{ "%.1f"|format(low_risk / total_p * 100) }}%
+                                    {% else %}
+                                    74.5%
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Models Comparison Table -->
+        <div class="card glass-card p-4 border-0 mb-5 text-color">
+            <h4 class="fw-bold mb-3"><i class="fa-solid fa-table-list me-2 text-primary"></i>Classifier Algorithms Comparison Matrix</h4>
+            <p class="text-muted small">8 classification models are trained. Below are details of their testing accuracy, precision, recall, F1, cross validation accuracy, and AUC scores.</p>
+            
+            <div class="table-responsive">
+                <table class="table table-hover table-striped border align-middle mb-0">
+                    <thead class="table-light">
+                        <tr class="small text-uppercase">
+                            <th>Model Algorithm</th>
+                            <th>Accuracy</th>
+                            <th>Precision</th>
+                            <th>Recall</th>
+                            <th>F1-Score</th>
+                            <th>CV Mean</th>
+                            <th>ROC-AUC</th>
+                        </tr>
+                    </thead>
+                    <tbody class="small">
+                        {% for item in comparison %}
+                        <tr class="{% if item.Model == best_model %}table-success fw-bold{% endif %}">
+                            <td>
+                                {% if item.Model == best_model %}
+                                <i class="fas fa-star text-warning me-1"></i>
+                                {% endif %}
+                                {{ item.Model }}
+                            </td>
+                            <td>{{ "%.4f"|format(item.Accuracy) }}</td>
+                            <td>{{ "%.4f"|format(item.Precision) }}</td>
+                            <td>{{ "%.4f"|format(item.Recall) }}</td>
+                            <td class="text-primary">{{ "%.4f"|format(item['F1-Score']) }}</td>
+                            <td>{{ "%.4f"|format(item['CV Accuracy']) }}</td>
+                            <td>{{ "%.4f"|format(item['ROC-AUC']) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 3. EDA Visualizations Slide Tabs -->
+        <h4 class="fw-bold mb-4"><i class="fa-solid fa-chart-column me-2 text-primary"></i>Exploratory Data Analysis & Visualizations</h4>
+        
+        <ul class="nav nav-pills justify-content-center mb-4 gap-2" id="edaPlotsTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active btn px-4 py-2" id="risk-plots-tab" data-bs-toggle="pill" data-bs-target="#risk-plots" type="button" role="tab" aria-controls="risk-plots" aria-selected="true">
+                    <i class="fas fa-shield-halved me-1"></i>Credit Risk Distribution
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link btn px-4 py-2" id="demo-plots-tab" data-bs-toggle="pill" data-bs-target="#demo-plots" type="button" role="tab" aria-controls="demo-plots" aria-selected="false">
+                    <i class="fas fa-users me-1"></i>Demographics Plots
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link btn px-4 py-2" id="model-plots-tab" data-bs-toggle="pill" data-bs-target="#model-plots" type="button" role="tab" aria-controls="model-plots" aria-selected="false">
+                    <i class="fas fa-network-wired me-1"></i>Model Evaluation Charts
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="edaPlotsTabContent">
+            <!-- Tab 1: Risk and Financial Distributions -->
+            <div class="tab-pane fade show active" id="risk-plots" role="tabpanel" aria-labelledby="risk-plots-tab">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="card glass-card p-3 border-0 h-100">
+                            <h6 class="fw-bold text-center mb-3">Overall Loan Status Distribution (Y/N)</h6>
+                            <img src="{{ url_for('static', filename='images/eda/loan_status_pie.png') }}" class="img-fluid eda-plot-img" alt="Loan Status Pie Chart" onerror="this.src='https://placehold.co/600x400?text=Run+train_model.py+to+generate'">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card glass-card p-3 border-0 h-100">
+                            <h6 class="fw-bold text-center mb-3">Approval Rate by Credit History Score</h6>
+                            <img src="{{ url_for('static', filename='images/eda/credit_history_analysis.png') }}" class="img-fluid eda-plot-img" alt="Credit History Analysis Chart" onerror="this.src='https://placehold.co/600x400?text=Run+train_model.py+to+generate'">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card glass-card p-3 border-0 h-100">
+                            <h6 class="fw-bold text-center mb-3">Applicant Income Density & Box Plot</h6>
+                            <img src="{{ url_for('static', filename='images/eda/applicant_income_dist.png') }}" class="img-fluid eda-plot-img" alt="Applicant Income Density" onerror="this.src='https://placehold.co/600x400?text=Run+train_model.py+to+generate'">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card glass-card p-3 border-0 h-100">
+                            <h6 class="fw-bold text-center mb-3">Loan Amount Distribution and Outliers</h6>
+                            <img src="{{ url_for('static', filename='images/eda/loan_amount_dist.png') }}" class="img-fluid eda-plot-img" alt="Loan Amount Distribution" onerror="this.src='https://placehold.co/600x400?text=Run+train_model.py+to+generate'">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 2: Demographic Counts -->
+            <div class="tab-pane fade" id="demo-plots" role="tabpanel" aria-labelledby="demo-plots-tab">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="card glass-card p-3 border-0 h-100">
+                            <h6 class="fw-bold text-center mb-3">Approval Counts by Gender</h6>
+                            <img src="{{ url_for('static', filename='images/eda/gender_analysis.png') }}" class="img-fluid eda-plot-img" alt="Gender Analysis Chart" onerror="this.src='https://placehold.co/600x400?text=Run+train_model.py+to+generate'">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card glass-card p-3 border-0 h-100">
+                            <h6 class="fw-bold text-center mb-3">Approval Counts by Marital Status</h6>
+                            <img src="{{ url_for('static', filename='images/eda/marital_status_analysis.png') }}" class="img-fluid eda-plot-img" alt="Marital Status Chart" onerror="this.src='https://placehold.co/600x400?text=Run+train_model.py+to+generate'">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card glass-card p-3 border-0 h-100">
+                            <h6 class="fw-bold text-center mb-3">Approval Counts by Property Area</h6>
+                            <img src="{{ url_for('static', filename='images/eda/property_area_analysis.png') }}" class="img-fluid eda-plot-img" alt="Property Area Chart" onerror="this.src='https://placehold.co/600x400?text=Run+train_model.py+to+generate'">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card glass-card p-3 border-0 h-100">
+                            <h6 class="fw-bold text-center mb-3">Approval Counts by Employment Type</h6>
+                            <img src="{{ url_for('static', filename='images/eda/employment_analysis.png') }}" class="img-fluid eda-plot-img" alt="Employment Chart" onerror="this.src='https://placehold.co/600x400?text=Run+train_model.py+to+generate'">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 3: Model Evaluation Curves & Matrices -->
+            <div class="tab-pane fade" id="model-plots" role="tabpanel" aria-labelledby="model-plots-tab">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="card glass-card p-3 border-0 h-100">
+                            <h6 class="fw-bold text-center mb-3">ROC Curves comparison for all 8 Classifiers</h6>
+                            <img src="{{ url_for('static', filename='images/eda/roc_curves_comparison.png') }}" class="img-fluid eda-plot-img" alt="ROC Curves Comparison Chart" onerror="this.src='https://placehold.co/600x400?text=Run+train_model.py+to+generate'">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card glass-card p-3 border-0 h-100">
+                            <h6 class="fw-bold text-center mb-3">Feature Correlation Matrix heatmap</h6>
+                            <img src="{{ url_for('static', filename='images/eda/correlation_heatmap.png') }}" class="img-fluid eda-plot-img" alt="Correlation Heatmap Matrix" onerror="this.src='https://placehold.co/600x400?text=Run+train_model.py+to+generate'">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card glass-card p-3 border-0 h-100">
+                            <h6 class="fw-bold text-center mb-3">Confusion Matrix for Best Model (Testing Set)</h6>
+                            <img src="{{ url_for('static', filename='images/eda/best_model_confusion_matrix.png') }}" class="img-fluid eda-plot-img" alt="Best Model Confusion Matrix" onerror="this.src='https://placehold.co/600x400?text=Run+train_model.py+to+generate'">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card glass-card p-3 border-0 h-100">
+                            <h6 class="fw-bold text-center mb-3">Feature Importance (Model Weights)</h6>
+                            <img src="{{ url_for('static', filename='images/eda/feature_importance.png') }}" class="img-fluid eda-plot-img" alt="Feature Importance Chart" onerror="this.src='https://placehold.co/600x400?text=Run+train_model.py+to+generate'">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

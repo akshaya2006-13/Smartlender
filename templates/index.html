@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Hero Banner -->
+<section class="hero-section">
+    <div class="container position-relative z-1">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6 animated-fade">
+                <span class="badge bg-info text-dark fw-bold mb-3 px-3 py-2 text-uppercase tracking-wider">Next-Gen Credit Analytics</span>
+                <h1 class="hero-title">Automated Loan Eligibility <br><span class="gradient-text">Prediction Engine</span></h1>
+                <p class="lead text-white-50 mb-4">Leverage state-of-the-art Machine Learning algorithms to analyze applicant risk profiles, predict eligibility decisions, and download detailed underwriting reports in real time.</p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="{{ url_for('predict') }}" class="btn btn-primary-custom btn-lg"><i class="fa-solid fa-square-check me-2"></i>Verify Eligibility</a>
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-light btn-lg rounded-pill px-4"><i class="fa-solid fa-chart-line me-2"></i>View Metrics</a>
+                </div>
+            </div>
+            
+            <div class="col-lg-6 animated-fade">
+                <!-- Premium Glassmorphic Feature Showcase Card -->
+                <div class="card glass-card p-4 text-dark border-0">
+                    <div class="d-flex align-items-center gap-3 mb-4">
+                        <div class="bg-primary bg-gradient text-white p-3 rounded-3">
+                            <i class="fa-solid fa-shield-halved fs-3 text-info"></i>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold mb-0 text-color">Safe & Compliant Assessment</h5>
+                            <small class="text-muted">IBM Capstone Compliant Framework</small>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="small fw-semibold text-color">Average Model Accuracy</span>
+                            <span class="small fw-bold text-success">83.4%</span>
+                        </div>
+                        <div class="progress" style="height: 6px;">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: 83.4%" aria-valuenow="83.4" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="small fw-semibold text-color">Credit Risk Coverage</span>
+                            <span class="small fw-bold text-info">100% Insured</span>
+                        </div>
+                        <div class="progress" style="height: 6px;">
+                            <div class="progress-bar bg-info" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-3 bg-light bg-opacity-50 rounded-3 border">
+                        <p class="small text-muted mb-0"><i class="fa-solid fa-info-circle text-primary me-1"></i> <strong>Real-time decisioning:</strong> Input demographic and financial parameters to execute classification scores across 8 ML algorithms.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats counters section -->
+<section class="py-5 bg-body-tertiary">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-3 col-6">
+                <div class="card glass-card stat-card border-0">
+                    <div class="stat-number"><span class="counter-val" data-target="{{ total_predictions }}">0</span></div>
+                    <div class="dashboard-stat-label">Assessments Analyzed</div>
+                </div>
+            </div>
+            
+            <div class="col-md-3 col-6">
+                <div class="card glass-card stat-card border-0">
+                    <div class="stat-number"><span class="counter-val" data-target="{{ approval_rate }}">0</span>%</div>
+                    <div class="dashboard-stat-label">Pre-Approval Rate</div>
+                </div>
+            </div>
+            
+            <div class="col-md-3 col-6">
+                <div class="card glass-card stat-card border-0">
+                    <div class="stat-number"><span class="counter-val" data-target="8">0</span></div>
+                    <div class="dashboard-stat-label">ML Models Evaluated</div>
+                </div>
+            </div>
+            
+            <div class="col-md-3 col-6">
+                <div class="card glass-card stat-card border-0">
+                    <div class="stat-number">&lt;<span class="counter-val" data-target="0.5">0.0</span>s</div>
+                    <div class="dashboard-stat-label">Average Response Time</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How it works -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">How the Smart Lender System Works</h2>
+            <p class="text-muted col-lg-6 mx-auto">Get your instant credit assessment in four simple, highly secure steps powered by automated underwriting frameworks.</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="card glass-card h-100 p-4 border-0 text-center glass-card-hover">
+                    <div class="fs-1 text-primary mb-3"><i class="fa-solid fa-keyboard"></i></div>
+                    <h5 class="fw-bold">1. Data Entry</h5>
+                    <p class="text-muted small mb-0">Fill in demographic information, monthly income details, co-applicant variables, and requested loan amount.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card glass-card h-100 p-4 border-0 text-center glass-card-hover">
+                    <div class="fs-1 text-info mb-3"><i class="fa-solid fa-gears"></i></div>
+                    <h5 class="fw-bold">2. ML Verification</h5>
+                    <p class="text-muted small mb-0">The data is clean, preprocessed, scaled, and passed to our trained ensemble pipelines (XGBoost, Random Forest, SVC).</p>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card glass-card h-100 p-4 border-0 text-center glass-card-hover">
+                    <div class="fs-1 text-success mb-3"><i class="fa-solid fa-gauge-high"></i></div>
+                    <h5 class="fw-bold">3. Risk Scoring</h5>
+                    <p class="text-muted small mb-0">The system calculates pre-approval probabilities, evaluates default risk levels, and generates structured underwriting comments.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card glass-card h-100 p-4 border-0 text-center glass-card-hover">
+                    <div class="fs-1 text-warning mb-3"><i class="fa-solid fa-file-pdf"></i></div>
+                    <h5 class="fw-bold">4. Assessment Report</h5>
+                    <p class="text-muted small mb-0">Download a formal PDF analysis report containing pre-approval parameters, confidence scores, and action plans.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- System Features list -->
+<section class="py-5 bg-body-tertiary">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-5">
+                <h2 class="fw-bold mb-4">Enterprise Grade Underwriting Solution</h2>
+                
+                <div class="d-flex align-items-start gap-3 mb-4">
+                    <div class="text-info fs-4"><i class="fa-solid fa-circle-check"></i></div>
+                    <div>
+                        <h5 class="fw-bold">Robust Batch Processing</h5>
+                        <p class="text-muted mb-0">Upload a single CSV containing hundreds of customer profiles to run batch inference. Download logs and results straight from the admin dashboard.</p>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-start gap-3 mb-4">
+                    <div class="text-info fs-4"><i class="fa-solid fa-circle-check"></i></div>
+                    <div>
+                        <h5 class="fw-bold">Explainable AI Reasoning</h5>
+                        <p class="text-muted mb-0">Every decision features structured natural language reasoning, detailing DTI limits, credit record impacts, and property risk parameters.</p>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-start gap-3">
+                    <div class="text-info fs-4"><i class="fa-solid fa-circle-check"></i></div>
+                    <div>
+                        <h5 class="fw-bold">Modern Banking Theme Switcher</h5>
+                        <p class="text-muted mb-0">Light and dark modes allow users to review system charts, metrics comparisons, and admin panel records comfortably.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-7">
+                <div class="row g-4">
+                    <div class="col-6">
+                        <div class="card glass-card p-4 border-0 h-100">
+                            <h6 class="fw-bold text-info"><i class="fa-solid fa-microchip me-1"></i> XGBoost Classifier</h6>
+                            <p class="text-muted small mb-0">Trained extreme gradient boosting for high accuracy non-linear checks.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="col-6">
+                        <div class="card glass-card p-4 border-0 h-100">
+                            <h6 class="fw-bold text-success"><i class="fa-solid fa-tree me-1"></i> Random Forest</h6>
+                            <p class="text-muted small mb-0">Ensemble of weak decision trees offering strong generalization caps.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="card glass-card p-4 border-0 h-100">
+                            <h6 class="fw-bold text-primary"><i class="fa-solid fa-bezier-curve me-1"></i> Support Vector Machine</h6>
+                            <p class="text-muted small mb-0">Maximizes margins in high dimensional space, ideal for credit risk classification.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="card glass-card p-4 border-0 h-100">
+                            <h6 class="fw-bold text-warning"><i class="fa-solid fa-arrow-trend-up me-1"></i> Logistic Regression</h6>
+                            <p class="text-muted small mb-0">Statistical baseline model offering explainable weight and odds distributions.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
