@@ -476,7 +476,13 @@ def api_predict():
 def page_not_found(e):
     return render_template('404.html'), 404
 
+import os
+
 if __name__ == '__main__':
     # Force reload of artifacts when running app.py
     predictor.load_artifacts()
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(
+        host='0.0.0.0',
+        port=int(os.environ.get("PORT", 5000)),
+        debug=False
+    )
