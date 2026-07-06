@@ -4,6 +4,10 @@ SMART LENDER is a complete, production-ready, enterprise-grade automated underwr
 
 Developed as a college capstone portfolio project, the framework matches guidelines for explainable credit scoring, input verification, and secure cloud deployments.
 
+## 🚀 Live Demo
+
+[Click here to open Smart Lender](https://web-production-cf77c.up.railway.app/)
+
 ---
 
 ## Technical Architecture & Diagrammatic Model
