@@ -1,0 +1,76 @@
+# Smart Lender – AI Powered Loan Approval Prediction System
+
+## Repository Structure
+
+This repository contains all the project deliverables for the **Smart Lender – AI Powered Loan Approval Prediction System** developed as part of the Artificial Intelligence and Machine Learning Track.
+
+### 1. Brainstorming & Ideation
+Contains brainstorming activities, idea generation, empathy map, problem statement, and idea prioritization documents.
+
+### 2. Requirement Analysis
+Includes customer requirements, functional and non-functional requirements, use cases, and project scope.
+
+### 3. Project Design Phase
+Contains system architecture, application architecture, ER diagram, workflow diagrams, UI design, and project design documents.
+
+### 4. Project Planning Phase
+Includes sprint planning, product backlog, project schedule, communication plan, and project management artifacts.
+
+### 5. Project Development Phase
+Contains source code, machine learning models, datasets, Flask application, HTML templates, static files, and implementation documents.
+
+### 6. Project Testing
+Includes test cases, test results, bug reports, validation reports, and performance evaluation.
+
+### 7. Project Documentation
+Contains the final project report, technical documentation, user manual, presentation, and supporting documents.
+
+### 8. Project Demonstration
+Includes project demo video, screenshots, deployment details, demonstration report, and presentation materials.
+
+---
+
+## Project Description
+
+Smart Lender is an AI-powered web application that predicts the creditworthiness of loan applicants using Machine Learning. The system evaluates applicant information such as income, employment status, education, credit history, loan amount, and property details to predict whether a loan should be approved.
+
+The project implements multiple classification algorithms including Decision Tree, Random Forest, K-Nearest Neighbors (KNN), and XGBoost. After comparing the performance of all models, XGBoost was selected as the final model due to its superior prediction accuracy.
+
+The application is developed using Python and Flask and provides a user-friendly interface for real-time loan approval prediction.
+
+---
+
+## Technologies Used
+
+- Python
+- Flask
+- Pandas
+- NumPy
+- Scikit-learn
+- XGBoost
+- Matplotlib
+- Seaborn
+- HTML
+- CSS
+- JavaScript
+
+---
+
+## Team Members
+
+- Miriyala Akshaya (Team Lead)
+- Shaik Naziya Tahseen
+- Haripriya Vissakoti
+- Venkata Hemanth Rudru
+- Vakkalagadda Sneha Madhuri
+
+---
+
+## Repository
+
+**GitHub Repository:**
+https://github.com/akshaya2006-13/Smartlender
+
+---
+
+**Artificial Intelligence & Machine Learning Track Project**
